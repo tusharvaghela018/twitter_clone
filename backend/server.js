@@ -1,10 +1,22 @@
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import express from "express";
+import {v2 as cloudinary} from "cloudinary"
+
+import  authRouter from "./routes/auth.routes.js";
+import  userRouter from "./routes/user.routes.js"
+
+import { connectMongoDB } from "./db/connectMongoDB.js";
+
 dotenv.config();
 
-import express from "express";
-import  router from "./routes/auth.routes.js";
-import cookieParser from "cookie-parser";
-import { connectMongoDB } from "./db/connectMongoDB.js";
+cloudinary.config(
+    {
+        cloud_name : process.env.CLOUDINARY_CLOUD_NAME,
+        api_key : process.env.CLOUDINARY_API_KEY,
+        api_secret : process.env.CLOUDINARY_API_SECRET
+    }
+)
 
 const app = express();
 
@@ -13,7 +25,10 @@ app.use(express.json()); // to parse the req.body
 app.use(express.urlencoded({extended : true})); // to parse the form data
 app.use(cookieParser()); //parse the cookie
 
-app.use("/api/auth", router);
+
+//routes
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 
 app.listen(process.env.PORT,()=>{
 

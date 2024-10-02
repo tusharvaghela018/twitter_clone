@@ -54,7 +54,7 @@ export const signup = async(req,res) => {
 
 
         //hash the password before save the data to the dataBase
-        const salt = await bcrypt.getSalt(10);
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt)
 
         //set all the data for the new user
@@ -67,8 +67,11 @@ export const signup = async(req,res) => {
 
         //if newUser created then generate the new token and set the cookie for new user
         if(newUser){
-            generateTokenandSetCookie(newUser._id, res)
-            await newUser.save()
+            // Save the user first
+            await newUser.save();
+
+            // If newUser is created successfully, then generate the token and set the cookie
+            generateTokenandSetCookie(newUser._id, res);
 
             res.status(201).json({
                 success : true,
@@ -90,6 +93,7 @@ export const signup = async(req,res) => {
         }
         
     } catch (error) {
+        
         console.log(`ERR : error while signup , ERROR : ${error.message}`)
 
         res.status(500).json(
@@ -152,6 +156,7 @@ export const login = async(req,res) => {
         )
     } catch (error) {
         console.log(`ERR : error while login, ERROR : ${error.message}`)
+
         res.status(500).json({
             success : false,
             error : "Internal server error : Login Controller",
@@ -201,3 +206,13 @@ export const getMe = async(req,res) => {
         )
     }
 }
+
+// export const getData = async(req,res) =>{
+//     try {
+//         const allData = await User.find().select("-password");
+
+//         res.status(200).json(allData)
+//     } catch (error) {
+//         console.log("ERROR : erro rin getData", error.message);
+//     }
+// }
