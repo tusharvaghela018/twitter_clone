@@ -8,11 +8,11 @@ import Notification from "../models/notification.model.js";
 //controller for the get the user profile
 export const getUserProfile = async(req,res) => {
 
-    const {username} = req.params;
+    const username = req.params.username;
 
     try {
         
-        const user = await User.findOne({username}).select("-password");
+        const user = await User.findOne({username : username}).select("-password");
 
         if(!user){
             return res.status(404).json(
