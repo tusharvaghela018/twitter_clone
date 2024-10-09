@@ -22,14 +22,14 @@ const userSchema = new mongoose.Schema({
     },
     followers : [
         {
-            type : mongoose.Types.ObjectId,
+            type : mongoose.Schema.Types.ObjectId,
             ref : "User",
             default : []
         }
     ],
     following : [
         {
-            type : mongoose.Types.ObjectId,
+            type : mongoose.Schema.Types.ObjectId,
             ref : "User",
             default : []
         }
@@ -49,11 +49,16 @@ const userSchema = new mongoose.Schema({
     link : {
         type : String,
         default : ""
+    },
+    likedPosts : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+        default : []
     }
 }, 
 //use for : member since july 2021, like createdAt
 {timestamps : true})
 
-const User = mongoose.model("user", userSchema)
+const User = mongoose.model("User", userSchema)
 
-export default User
+export default User;
