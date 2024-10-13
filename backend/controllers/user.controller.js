@@ -89,7 +89,6 @@ export const followUnfollowUser = async(req,res) => {
             await User.findByIdAndUpdate(req.user._id, {$push : {following : id}})
 
             //send the notification
-
             const newNotification = new Notification(
                 {
                     type : "follow",
@@ -101,7 +100,6 @@ export const followUnfollowUser = async(req,res) => {
             await newNotification.save()
 
             //TODO return the id of the user as a response
-
             res.status(200).json(
                 {
                     success : true,
