@@ -123,7 +123,6 @@ export const followUnfollowUser = async(req,res) => {
 }
 
 //for the get suggested user
-
 export const getSuggestedUser = async(req,res)=>{
     try {
 
