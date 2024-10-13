@@ -23,7 +23,7 @@ cloudinary.config(
 const app = express();
 
 //middlewares
-app.use(express.json()); // to parse the req.body
+app.use(express.json({limit : "1mb"})); // to parse the req.body
 app.use(express.urlencoded({extended : true})); // to parse the form data
 app.use(cookieParser()); //parse the cookie
 
