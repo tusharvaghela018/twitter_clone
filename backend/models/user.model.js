@@ -50,11 +50,11 @@ const userSchema = new mongoose.Schema({
         type : String,
         default : ""
     },
-    likedPosts : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-        default : []
-    }
+    likedPosts: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] 
+
+        }
+    ], // This line is crucial
 }, 
 //use for : member since july 2021, like createdAt
 {timestamps : true})

@@ -7,7 +7,7 @@ export const signup = async(req,res) => {
     try {
 
         //take the all values from the user
-        const {fullname, username, email, password} = req.body
+        const {email, username, fullname, password} = req.body
 
         //validating email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,8 +65,6 @@ export const signup = async(req,res) => {
             password : hashedPassword
         })
 
-        //if newUser created then generate the new token and set the cookie for new user
-        if(newUser){
             // Save the user first
             await newUser.save();
 
@@ -84,13 +82,6 @@ export const signup = async(req,res) => {
                 profileImg : newUser.profileImg,
                 coverImg : newUser.coverImg
             })
-
-        }else{
-            res.status(400).json({
-                success : false,
-                error : "Invalid user data"
-            })
-        }
         
     } catch (error) {
         
@@ -125,16 +116,16 @@ export const login = async(req,res) => {
 
         const IspasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
-        generateTokenandSetCookie(user._id, res)
-
-        if(!IspasswordCorrect){
-            return res.status(400).json(
-                {
-                    success : false,
-                    error : "credentials are not matched"
-                }
-            )
+        // First, check if the password is correct before generating the token
+        if (!IspasswordCorrect) {
+            return res.status(400).json({
+                success: false,
+                error: "Credentials are not matched"
+            });
         }
+
+        // After successful password check, generate the token
+        generateTokenandSetCookie(user._id, res);
 
         res.status(200).json(
             {
