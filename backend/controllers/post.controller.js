@@ -209,12 +209,9 @@ export const likeUnlikePost = async(req,res) => {
 
             await post.save();
 
-            res.status(200).json(
-                {
-                    success : true,
-                    message : "post unliked"
-                }
-            )
+            const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString())
+
+            res.status(200).json(updatedLikes)
 
         }else{
             //if not liked 
@@ -235,12 +232,9 @@ export const likeUnlikePost = async(req,res) => {
 
             await notification.save();
 
-            res.status(200).json(
-                {
-                    success : true,
-                    message : "Post liked"
-                }
-            )
+            const updatedLikes = post.likes
+
+            res.status(200).json(updatedLikes)
 
         }
 
@@ -296,7 +290,6 @@ export const getAllPosts = async(req,res) => {
 
 
 //get all liked posts
-
 export const getLikedPosts = async(req,res) => {
 
     const userId = req.params.id;
@@ -340,7 +333,6 @@ export const getLikedPosts = async(req,res) => {
 
 
 //get all following posts
-
 export const getFollowingPosts = async(req,res) => {
     try {
         
@@ -393,7 +385,6 @@ export const getFollowingPosts = async(req,res) => {
 }
 
 //get userPosts
-
 export const getUserPosts = async(req,res) => {
     try {
         
