@@ -6,7 +6,7 @@ import {v2 as cloudinary} from "cloudinary"
 import  authRouter from "./routes/auth.routes.js";
 import  userRouter from "./routes/user.routes.js";
 import  postRouter from "./routes/post.routes.js"
-import  noticationRouter from "./routes/notification.routes.js"
+import  notificationRouter from "./routes/notification.routes.js"
 
 import { connectMongoDB } from "./db/connectMongoDB.js";
 
@@ -32,7 +32,7 @@ app.use(cookieParser()); //parse the cookie
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/posts",postRouter)
-app.use("/api/notifications", noticationRouter)
+app.use("/api/notifications", notificationRouter)
 
 app.listen(process.env.PORT,()=>{
 
