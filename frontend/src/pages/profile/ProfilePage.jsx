@@ -30,40 +30,40 @@ const ProfilePage = () => {
 
 	const { username } = useParams()
 
-	const {follow, isPending} = useFollow();
+	const { follow, isPending } = useFollow();
 
-	const {data : authUser } = useQuery({queryKey : ["authUser"]})
+	const { data: authUser } = useQuery({ queryKey: ["authUser"] })
 
-	const {data : user, isLoading, refetch, isRefetching} = useQuery({
-		queryKey : ["userProfile"],
-		queryFn : async() => {
+	const { data: user, isLoading, refetch, isRefetching } = useQuery({
+		queryKey: ["userProfile"],
+		queryFn: async () => {
 			try {
 				const res = await fetch(`/api/users/profile/${username}`);
 
 				const data = await res.json()
 
-				if(!res.ok){
-					throw new Error(data.error || "Something went wrong") 
+				if (!res.ok) {
+					throw new Error(data.error || "Something went wrong")
 				}
 
 				return data;
 
 			} catch (error) {
-				throw new Error(error)	
+				throw new Error(error)
 			}
 		}
 	})
 
-	const {mutate : updateProfile, isPending : isUpdatingProfile} = useMutation({
-		mutationFn : async() => {
+	const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
+		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/users/update/`,{
-					method : "POST",
-					headers : {
-						"Content-Type" : "application/json",
+				const res = await fetch(`/api/users/update/`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
 					},
 
-					body : JSON.stringify(
+					body: JSON.stringify(
 						{
 							coverImg,
 							profileImg
@@ -73,31 +73,34 @@ const ProfilePage = () => {
 
 				const data = await res.json()
 
-				if(!res.ok){
+				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong")
 				}
 
 				return data;
 			} catch (error) {
-				
+
 				throw new Error(error.message)
 			}
 		},
-		onSuccess : ()=>{
+		onSuccess: () => {
 			toast.success("Profile updated successfully")
 
 			Promise.all([
-				queryClient.invalidateQueries({queryKey : ["authUser"]}),
-				queryClient.invalidateQueries({queryKey : ["userProfile"]})
+				queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+				queryClient.invalidateQueries({ queryKey: ["userProfile"] })
 			])
+
+			setCoverImg(null);  // Reset coverImg
+			setProfileImg(null); // Reset profileImg
 		},
-		onError : (error) => {
+		onError: (error) => {
 			toast.error(error.message)
 		}
 	})
 
 	const isMyProfile = authUser?._id === user?._id;
-	const memberSinceDate =formatMemberSinceDate(user?.createdAt)
+	const memberSinceDate = formatMemberSinceDate(user?.createdAt)
 	const amIFollowing = authUser?.following.includes(user?._id)
 
 	const handleImgChange = (e, state) => {
@@ -112,9 +115,9 @@ const ProfilePage = () => {
 		}
 	};
 
-	useEffect(()=> { 
+	useEffect(() => {
 		refetch();
-	},[username, refetch])
+	}, [username, refetch])
 
 	return (
 		<>
@@ -153,14 +156,14 @@ const ProfilePage = () => {
 								<input
 									type='file'
 									hidden
-                                    accept="image/*"
+									accept="image/*"
 									ref={coverImgRef}
 									onChange={(e) => handleImgChange(e, "coverImg")}
 								/>
 								<input
 									type='file'
 									hidden
-                                    accept="image/*"
+									accept="image/*"
 									ref={profileImgRef}
 									onChange={(e) => handleImgChange(e, "profileImg")}
 								/>
@@ -180,13 +183,13 @@ const ProfilePage = () => {
 								</div>
 							</div>
 							<div className='flex justify-end px-4 mt-5'>
-								{isMyProfile && <EditProfileModal authUser={authUser}/>}
+								{isMyProfile && <EditProfileModal authUser={authUser} />}
 								{!isMyProfile && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
 										onClick={() => follow(user?._id)}
 									>
-										{isPending && "Loading..." }
+										{isPending && "Loading..."}
 										{!isPending && amIFollowing && "Unfollow"}
 										{!isPending && !amIFollowing && "Follow"}
 									</button>
@@ -214,12 +217,13 @@ const ProfilePage = () => {
 											<>
 												<FaLink className='w-3 h-3 text-slate-500' />
 												<a
-													href='https://youtube.com/@asaprogrammer_'
+													href={user?.link.startsWith("http") ? user?.link : `https://${user?.link}`} // Add protocol if missing
 													target='_blank'
-													rel='noreferrer'
+													rel='noreferrer noopener'
+													onClick={(e) => e.stopPropagation()}  // Prevent React Router from handling it
 													className='text-sm text-blue-500 hover:underline'
 												>
-													youtube.com/@asaprogrammer_
+													{`${user?.link}`}
 												</a>
 											</>
 										</div>
@@ -265,7 +269,7 @@ const ProfilePage = () => {
 						</>
 					)}
 
-					<Posts feedType={feedType} username = {username} userId = {user?._id}/>
+					<Posts feedType={feedType} username={username} userId={user?._id} />
 				</div>
 			</div>
 		</>
