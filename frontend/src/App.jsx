@@ -10,7 +10,7 @@ import ProfilePage from "./pages/profile/ProfilePage"
 
 
 //components
-import Sidebar from "./components/common/SideBar"
+import Sidebar from "./components/common/Sidebar"
 import RightPanel from "./components/common/RightPanel"
 
 import { Toaster } from "react-hot-toast"
