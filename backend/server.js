@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import path from "path"
 import cookieParser from "cookie-parser";
 import express from "express";
 import {v2 as cloudinary} from "cloudinary"
@@ -20,7 +21,9 @@ cloudinary.config(
     }
 )
 
+const PORT = process.env.PORT || 5000
 const app = express();
+const __dirname = path.resolve()
 
 //middlewares
 app.use(express.json({limit : "1mb"})); // to parse the req.body
@@ -34,7 +37,15 @@ app.use("/api/users", userRouter);
 app.use("/api/posts",postRouter)
 app.use("/api/notifications", notificationRouter)
 
-app.listen(process.env.PORT,()=>{
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
+
+app.listen(PORT,()=>{
 
     console.log(`server is running on http://localhost:${process.env.PORT}`);
     
