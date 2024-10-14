@@ -23,7 +23,7 @@ cloudinary.config(
 
 const PORT = process.env.PORT || 5000
 const app = express();
-// const __dirname = path.resolve()
+const __dirname = path.resolve()
 
 //middlewares
 app.use(express.json({limit : "1mb"})); // to parse the req.body
@@ -37,13 +37,13 @@ app.use("/api/users", userRouter);
 app.use("/api/posts",postRouter)
 app.use("/api/notifications", notificationRouter)
 
-// if (process.env.NODE_ENV === "production") {
-// 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
-// 	app.get("*", (req, res) => {
-// 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-// 	});
-// }
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
 
 app.listen(PORT,()=>{
 
